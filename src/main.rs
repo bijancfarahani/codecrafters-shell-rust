@@ -23,7 +23,7 @@ fn process_input(input: &String) -> Option<ExitCode> {
         } else {
             println!("{}: not found", tokens_orwhat[1]);
         }
-        None
+       return None
     }
     match command {
         "exit" => Some(ExitCode::from(0)),
