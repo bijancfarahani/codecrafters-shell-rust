@@ -15,7 +15,11 @@ fn process_input(input: &String) -> Option<ExitCode>{
         {
             for argument in tokens_orwhat.iter().skip(1)
             {
-                print!("{} ", argument);
+                print!("{}", argument);
+                if argument != tokens_orwhat.last().unwrap()
+                {
+                    print!(" ");
+                }
             }
             println!("");
             None
