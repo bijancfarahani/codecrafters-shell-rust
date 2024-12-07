@@ -1,12 +1,30 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
 use std::process::ExitCode;
-
+use std::collections::HashSet;
+// Type inference lets us omit an explicit type signature (which
+// would be `HashSet<String>` in this example).
 use anyhow::Error;
 
 fn process_input(input: &String) -> Option<ExitCode>{
+    let mut commands = HashSet::new();
+    commands.insert("exit");
+    commands.insert("echo");
+
     let tokens_orwhat: Vec<&str> = input.split_whitespace().collect();
     let command = tokens_orwhat[0];
+
+    if command == "type"
+    {
+        if commands.contains(tokens_orwhat[1])
+        {
+            println!("{} is a shell builtin",tokens_orwhat[1]);
+        }
+        else {
+            println!("{}: not found",tokens_orwhat[1]);
+
+        }
+    }
     match command
     {
         "exit" => Some(ExitCode::from(0)),
