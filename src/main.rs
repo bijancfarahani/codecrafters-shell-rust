@@ -11,6 +11,15 @@ fn process_input(input: &String) -> Option<ExitCode>{
     {
         "exit" => Some(ExitCode::from(0)),
 
+        "echo" =>
+        {
+            for argument in tokens_orwhat.iter().skip(1)
+            {
+                print!("{} ", argument);
+            }
+            println!("");
+            None
+        }
         _ =>
         {
             println!("{}: command not found", command);
