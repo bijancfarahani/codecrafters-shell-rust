@@ -11,7 +11,11 @@ fn process_input(input: &String) -> Option<ExitCode>{
     {
         "exit" => Some(ExitCode::from(0)),
 
-        _ =>  None
+        _ =>
+        {
+            println!("{}: command not found", command);
+            None
+        }
     }
 }
 
