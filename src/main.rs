@@ -16,13 +16,16 @@ fn process_input(input: &String) -> Option<ExitCode>{
 
     if command == "type"
     {
+        if tokens_orwhat.len() == 1
+        {
+            println!("$ ");
+        }
         if commands.contains(tokens_orwhat[1])
         {
             println!("{} is a shell builtin",tokens_orwhat[1]);
         }
         else {
             println!("{}: not found",tokens_orwhat[1]);
-
         }
     }
     match command
