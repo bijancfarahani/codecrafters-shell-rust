@@ -18,15 +18,16 @@ fn process_input(input: &String) -> Option<ExitCode> {
                 println!("$ ");
                 return None;
             }
+            let arg = tokens_orwhat[1];
             //let user_binaries = ["exit", "echo", "type"];
             let path_env = env::var("PATH").unwrap();
             let split = &mut path_env.split(':');
             if let Some(path) =
-                split.find(|path| std::fs::metadata(format!("{}/{}", path, command)).is_ok())
+                split.find(|path| std::fs::metadata(format!("{}/{}", path, arg)).is_ok())
             {
-                println!("{command} is {path}/{command}");
+                println!("{arg} is {path}/{arg}");
             } else {
-                println!("{command} not found");
+                println!("{arg} not found");
             }
             return None;
         }
