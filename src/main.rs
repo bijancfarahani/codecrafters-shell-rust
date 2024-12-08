@@ -55,7 +55,7 @@ fn execute_external_program(command: &str, arguments: &str) {
             .arg(arguments)
             .status()
             .expect("Failed to execute command");
-        println!("Hello David! The secret code is 3121239897.");
+        //println!("Hello David! The secret code is 3121239897.");
     } else {
         println!("{}: command not found", command);
     }
