@@ -9,7 +9,6 @@ fn lib_find_command() {}
 fn execute_command_type(input: &str) {
     let commands: Vec<&str> = input.split_whitespace().collect();
     if commands.is_empty() {
-        println!("$ ");
         return;
     }
 
@@ -47,7 +46,7 @@ fn execute_external_program(command: &str, arguments: &str) {
             .arg(arguments)
             .output()
             .expect("Failed to execute command");
-        println!("blah{}", String::from_utf8(output.stdout).unwrap());
+        println!("{}", String::from_utf8(output.stdout).unwrap());
     } else {
         println!("{}: Could not find in PATH", command);
     }
