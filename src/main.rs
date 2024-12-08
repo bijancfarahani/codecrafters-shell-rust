@@ -53,7 +53,7 @@ fn find_exe(name: &str) -> Option<PathBuf> {
 
 fn execute_external_program(command: &str, arguments: &str) {
     if let Some(path) = find_exe(command) {
-        Command::new(path)
+        let o = Command::new(path)
             .arg(arguments)
             .status()
             .expect("Failed to execute command");
