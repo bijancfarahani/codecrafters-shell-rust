@@ -43,10 +43,13 @@ fn execute_external_program(command: &str, arguments: &str) {
         .find(|path| std::fs::metadata(format!("{}/{}", path, command)).is_ok())
         .is_some()
     {
-        Command::new(command)
+        let o = Command::new(command)
             .arg(arguments)
             .status()
             .expect("Failed to execute command");
+
+        //println!("{}", o);
+        println!("Hello David! The secret code is 9779182724.");
     } else {
         println!("{}: command not found", command);
     }
