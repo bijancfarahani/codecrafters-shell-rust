@@ -43,6 +43,7 @@ fn execute_external_program(command: &str, arguments: &str) {
         .find(|path| std::fs::metadata(format!("{}/{}", path, command)).is_ok())
         .is_some()
     {
+        return;
         let o = Command::new(command)
             .arg(arguments)
             .status()
