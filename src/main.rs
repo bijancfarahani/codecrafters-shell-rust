@@ -39,18 +39,13 @@ fn execute_command_exit() -> ExitCode {
 fn execute_external_program(command: &str, arguments: &str) {
     let path_env = env::var("PATH").unwrap();
     let split = &mut path_env.split(':');
-    if split
-        .find(|path| std::fs::metadata(format!("{}/{}", path, command)).is_ok())
-        .is_some()
+    if let Some(path) =
+        split.find(|path| std::fs::metadata(format!("{}/{}", path, command)).is_ok())
     {
-        let o = Command::new(command)
+        let o = Command::new(path)
             .arg(arguments)
             .status()
-            .expect("Failed to execute command")
-            .to_string();
-
-        //println!("{}", o);
-        //println!("Hello David! The secret code is 9779182724.");
+            .expect("Failed to execute command");
     } else {
         println!("{}: command not found", command);
     }
