@@ -53,8 +53,7 @@ fn execute_external_program(command: &str, arguments: &str) {
         let s = Command::new(path)
             .arg(arguments)
             .status()
-            .expect("Failed to execute command")
-            .to_string();
+            .expect("Failed to execute command");
         println!("The string is: {}", s);
     } else {
         println!("{}: command not found", command);
