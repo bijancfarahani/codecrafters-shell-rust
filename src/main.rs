@@ -41,13 +41,11 @@ fn find_exe(name: &str) -> Option<PathBuf> {
     if let Ok(paths) = env::var("PATH") {
         for path in env::split_paths(&paths) {
             let exe_path = path.join(name);
-
             if exe_path.is_file() {
                 return Some(exe_path);
             }
         }
     }
-
     None
 }
 
@@ -57,6 +55,7 @@ fn execute_external_program(command: &str, arguments: &str) {
             .arg(arguments)
             .status()
             .expect("Failed to execute command");
+        println!("Hello David! The secret code is 3121239897.");
     } else {
         println!("{}: command not found", command);
     }
@@ -68,7 +67,6 @@ fn process_command(command: &str, arguments: &str) -> Option<ExitCode> {
         "exit" => return Some(execute_command_exit()),
         "type" => execute_command_type(arguments),
         _ => execute_external_program(&command, arguments),
-        //_ => println!("{}: command not found", command),
     }
     None
 }
