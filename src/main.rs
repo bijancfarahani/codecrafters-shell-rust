@@ -1,31 +1,36 @@
-use std::collections::HashSet;
 #[allow(unused_imports)]
 use std::io::{self, Write};
 use std::process::ExitCode;
+use std::{array, collections::HashSet};
 // Type inference lets us omit an explicit type signature (which
 // would be `HashSet<String>` in this example).
 use anyhow::Error;
+use std::env;
 
 fn process_input(input: &String) -> Option<ExitCode> {
-    let mut commands = HashSet::new();
-    commands.insert("exit");
-    commands.insert("echo");
-    commands.insert("type");
-
     let tokens_orwhat: Vec<&str> = input.split_whitespace().collect();
     let command = tokens_orwhat[0];
 
-    if command == "type" {
-        if tokens_orwhat.len() == 1 {
-            println!("$ ");
-        } else if commands.contains(tokens_orwhat[1]) {
-            println!("{} is a shell builtin", tokens_orwhat[1]);
-        } else {
-            println!("{}: not found", tokens_orwhat[1]);
-        }
-       return None
-    }
     match command {
+        "type" => {
+            // validate cmd args.
+            if tokens_orwhat.len() == 1 {
+                println!("$ ");
+                return None;
+            }
+            //let user_binaries = ["exit", "echo", "type"];
+            let path_env = env::var("PATH").unwrap();
+            let split = &mut path_env.split(':');
+            if let Some(path) =
+                split.find(|path| std::fs::metadata(format!("{}/{}", path, command)).is_ok())
+            {
+                println!("{command} is {path}/{command}");
+            } else {
+                println!("{command} not found");
+            }
+            return None;
+        }
+
         "exit" => Some(ExitCode::from(0)),
 
         "echo" => {
