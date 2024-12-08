@@ -27,7 +27,7 @@ fn process_input(input: &String) -> Option<ExitCode> {
             {
                 println!("{arg} is {path}/{arg}");
             } else {
-                println!("{arg} not found");
+                println!("{arg}: not found");
             }
             return None;
         }
