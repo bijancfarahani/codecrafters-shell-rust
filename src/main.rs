@@ -46,10 +46,11 @@ fn execute_external_program(command: &str, arguments: &str) {
         let o = Command::new(command)
             .arg(arguments)
             .status()
-            .expect("Failed to execute command");
+            .expect("Failed to execute command")
+            .to_string();
 
         //println!("{}", o);
-        println!("Hello David! The secret code is 9779182724.");
+        //println!("Hello David! The secret code is 9779182724.");
     } else {
         println!("{}: command not found", command);
     }
