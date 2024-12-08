@@ -47,7 +47,7 @@ fn execute_external_program(command: &str, arguments: &str) {
             .arg(arguments)
             .output()
             .expect("Failed to execute command");
-        println!("{}", String::from_utf8(output.stdout).unwrap());
+        println!("blah{}", String::from_utf8(output.stdout).unwrap());
     } else {
         println!("{}: Could not find in PATH", command);
     }
