@@ -5,8 +5,6 @@ use std::path::PathBuf;
 use std::process::Command;
 use std::process::ExitCode;
 
-fn lib_find_command() {}
-
 fn execute_command_type(input: &str) {
     let commands: Vec<&str> = input.split_whitespace().collect();
     if commands.is_empty() {
@@ -37,7 +35,7 @@ fn execute_command_exit() -> ExitCode {
     return ExitCode::SUCCESS;
 }
 
-fn find_exe(name: &str) -> Option<PathBuf> {
+fn find_command(name: &str) -> Option<PathBuf> {
     if let Ok(paths) = env::var("PATH") {
         for path in env::split_paths(&paths) {
             let exe_path = path.join(name);
@@ -50,12 +48,12 @@ fn find_exe(name: &str) -> Option<PathBuf> {
 }
 
 fn execute_external_program(command: &str, arguments: &str) {
-    if let Some(path) = find_exe(command) {
-        Command::new(path)
+    if let Some(path) = find_command(command) {
+        let s = Command::new(path)
             .arg(arguments)
             .status()
-            .expect("Failed to execute command");
-        //println!("Hello David! The secret code is 3121239897.");
+            .expect("Failed to execute command")
+            .to_string();
     } else {
         println!("{}: command not found", command);
     }
