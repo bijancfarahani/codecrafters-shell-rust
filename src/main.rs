@@ -47,7 +47,7 @@ fn execute_external_program(command: &str, arguments: &str) {
             .arg(arguments)
             .output()
             .expect("Failed to execute command");
-        println!("{:?}", output.stdout);
+        println!("{:?}", output.stdout.as_slice());
     } else {
         println!("{}: Could not find in PATH", command);
     }
