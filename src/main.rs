@@ -55,7 +55,7 @@ fn execute_external_program(command: &str, arguments: &str) {
             .status()
             .expect("Failed to execute command")
             .to_string();
-        println!("{}", s);
+        println!("The string is: {}", s);
     } else {
         println!("{}: command not found", command);
     }
