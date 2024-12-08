@@ -49,12 +49,10 @@ fn find_command(name: &str) -> Option<PathBuf> {
 
 fn execute_external_program(command: &str, arguments: &str) {
     if let Some(path) = find_command(command) {
-        //println!("hey!");
-        let s = Command::new(path)
+        Command::new(path)
             .arg(arguments)
             .status()
             .expect("Failed to execute command");
-        println!("The string is: {}", s);
     } else {
         println!("{}: command not found", command);
     }
