@@ -42,13 +42,14 @@ fn execute_external_program(command: &str, arguments: &str) {
     if let Some(path) =
         split.find(|path| std::fs::metadata(format!("{}/{}", path, command)).is_ok())
     {
-        let output = Command::new(command)
+        Command::new(command)
             .arg(arguments)
-            .output()
+            .status()
+            // .output()
             .expect("Failed to execute command");
-        println!("{}", String::from_utf8_lossy(&output.stdout));
+        // println!("{}", String::from_utf8_lossy(&output.stdout));
     } else {
-        println!("{}: Could not find in PATH", command);
+        println!("{}: command not found", command);
     }
 }
 
