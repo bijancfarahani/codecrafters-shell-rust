@@ -19,10 +19,12 @@ fn process_input(input: &String) -> Option<ExitCode> {
                 return None;
             }
             let arg = tokens_orwhat[1];
-            //let user_binaries = ["exit", "echo", "type"];
+            let shell_builtins = ["exit", "echo", "type"];
             let path_env = env::var("PATH").unwrap();
             let split = &mut path_env.split(':');
-            if let Some(path) =
+            if shell_builtins.contains(&arg) {
+                println!("{arg} is a shell builtin");
+            } else if let Some(path) =
                 split.find(|path| std::fs::metadata(format!("{}/{}", path, arg)).is_ok())
             {
                 println!("{arg} is {path}/{arg}");
