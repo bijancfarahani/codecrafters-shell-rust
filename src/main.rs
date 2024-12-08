@@ -36,12 +36,22 @@ fn execute_command_exit() -> ExitCode {
     return ExitCode::SUCCESS;
 }
 
+fn find_exe(name: &str) -> Option<PathBuf> {
+    if let Ok(paths) = env::var("PATH") {
+        for path in env::split_paths(&paths) {
+            let exe_path = path.join(name);
+
+            if exe_path.is_file() {
+                return Some(exe_path);
+            }
+        }
+    }
+
+    None
+}
+
 fn execute_external_program(command: &str, arguments: &str) {
-    let path_env = env::var("PATH").unwrap();
-    let split = &mut path_env.split(':');
-    if let Some(path) =
-        split.find(|path| std::fs::metadata(format!("{}/{}", path, command)).is_ok())
-    {
+    if let Some(path) = find_exe(command) {
         Command::new(path)
             .arg(arguments)
             .status()
