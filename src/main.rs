@@ -42,7 +42,7 @@ fn execute_external_program(command: &str, arguments: &str) {
     if let Some(path) =
         split.find(|path| std::fs::metadata(format!("{}/{}", path, command)).is_ok())
     {
-        let o = Command::new(path)
+        Command::new(path)
             .arg(arguments)
             .status()
             .expect("Failed to execute command");
