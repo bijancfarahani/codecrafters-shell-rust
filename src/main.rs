@@ -1,75 +1,93 @@
+use std::env;
 #[allow(unused_imports)]
 use std::io::{self, Write};
+use std::process::Command;
 use std::process::ExitCode;
-use std::{array, collections::HashSet};
-// Type inference lets us omit an explicit type signature (which
-// would be `HashSet<String>` in this example).
-use anyhow::Error;
-use std::env;
 
-fn process_input(input: &String) -> Option<ExitCode> {
-    let tokens_orwhat: Vec<&str> = input.split_whitespace().collect();
-    let command = tokens_orwhat[0];
+fn lib_find_command() {}
 
-    match command {
-        "type" => {
-            // validate cmd args.
-            if tokens_orwhat.len() == 1 {
-                println!("$ ");
-                return None;
-            }
-            let arg = tokens_orwhat[1];
-            let shell_builtins = ["exit", "echo", "type"];
-            let path_env = env::var("PATH").unwrap();
-            let split = &mut path_env.split(':');
-            if shell_builtins.contains(&arg) {
-                println!("{arg} is a shell builtin");
-            } else if let Some(path) =
-                split.find(|path| std::fs::metadata(format!("{}/{}", path, arg)).is_ok())
-            {
-                println!("{arg} is {path}/{arg}");
-            } else {
-                println!("{arg}: not found");
-            }
-            return None;
-        }
+fn execute_command_type(input: &str) {
+    let commands: Vec<&str> = input.split_whitespace().collect();
+    if commands.is_empty() {
+        println!("$ ");
+        return;
+    }
 
-        "exit" => Some(ExitCode::from(0)),
-
-        "echo" => {
-            for argument in tokens_orwhat.iter().skip(1) {
-                print!("{}", argument);
-                if argument != tokens_orwhat.last().unwrap() {
-                    print!(" ");
-                }
-            }
-            println!("");
-            None
-        }
-        _ => {
-            println!("{}: command not found", command);
-            None
+    let shell_builtins = ["exit", "echo", "type"];
+    let path_env = env::var("PATH").unwrap();
+    let split = &mut path_env.split(':');
+    for command in commands {
+        if shell_builtins.contains(&command) {
+            println!("{command} is a shell builtin");
+        } else if let Some(path) =
+            split.find(|path| std::fs::metadata(format!("{}/{}", path, command)).is_ok())
+        {
+            println!("{command} is {path}/{command}");
+        } else {
+            println!("{command}: not found");
         }
     }
 }
 
-fn repl_loop() -> Option<ExitCode> {
+fn execute_command_echo(input: &str) {
+    println!("{}", input);
+}
+
+fn execute_command_exit() -> ExitCode {
+    return ExitCode::SUCCESS;
+}
+
+fn execute_external_program(command: &str, arguments: &str) {
+    let path_env = env::var("PATH").unwrap();
+    let split = &mut path_env.split(':');
+    if let Some(path) =
+        split.find(|path| std::fs::metadata(format!("{}/{}", path, command)).is_ok())
+    {
+        let output = Command::new(command)
+            .arg(arguments)
+            .output()
+            .expect("Failed to execute command");
+        println!("{:?}", output.stdout);
+    } else {
+        println!("{}: Could not find in PATH", command);
+    }
+}
+
+fn process_command(command: &str, arguments: &str) -> Option<ExitCode> {
+    match command {
+        "echo" => execute_command_echo(arguments),
+        "exit" => return Some(execute_command_exit()),
+        "type" => execute_command_type(arguments),
+        _ => execute_external_program(&command, arguments),
+        //_ => println!("{}: command not found", command),
+    }
+    None
+}
+
+fn process_input(input: &String) -> Option<ExitCode> {
+    if input.is_empty() {
+        return None;
+    }
+
+    let (command, remaining_input) = input.split_once(char::is_whitespace).unwrap();
+    return process_command(command, remaining_input);
+}
+
+fn evalulate_user_input() -> Option<ExitCode> {
     print!("$ ");
     io::stdout().flush().unwrap();
 
-    // Wait for user input
-    let stdin = io::stdin();
+    // Wait for user input.
     let mut input = String::new();
-    stdin.read_line(&mut input).unwrap();
+    io::stdin().read_line(&mut input).unwrap();
     return process_input(&input);
 }
 
 fn main() -> Result<ExitCode, &'static str> {
-    while true {
-        let result = repl_loop();
+    loop {
+        let result = evalulate_user_input();
         if result.is_some() {
             return Ok(result.unwrap());
         }
     }
-    Err("Past infinite loop")
 }
